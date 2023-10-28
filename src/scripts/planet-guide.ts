@@ -1,8 +1,7 @@
 import { validateEmail } from './helper/validation';
 import * as bootstrap from 'bootstrap';
 
-const API_URL = 'https://api.le-systeme-solaire.net/rest/bodies/';
-const loginForm = document.getElementById('login-form');
+const API_URL = 'http://api.le-systeme-solaire.net/rest/bodies/';
 
 interface Planet {
     isPlanet: boolean;
@@ -193,6 +192,7 @@ function showLoginForm(): void {
 
         document.body.appendChild(modal);
     }
+    const loginForm = document.getElementById('login-form');
     if (loginForm) {
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
