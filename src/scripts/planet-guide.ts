@@ -1,7 +1,7 @@
 import { validateEmail } from './helper/validation';
 import * as bootstrap from 'bootstrap';
 
-const API_URL = 'http://api.le-systeme-solaire.net/rest/bodies/';
+const API_URL = 'https://api.le-systeme-solaire.net/rest/bodies/';
 
 interface Planet {
     isPlanet: boolean;
