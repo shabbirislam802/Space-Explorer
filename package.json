@@ -11,6 +11,7 @@
     "lint": "eslint 'src/**/*.{ts,tsx}'"
   },
   "devDependencies": {
+    "@types/bootstrap": "^5.2.8",
     "@types/jest": "^29.5.6",
     "@typescript-eslint/eslint-plugin": "^6.9.0",
     "@typescript-eslint/parser": "^6.9.0",
