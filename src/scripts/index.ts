@@ -1,51 +1,48 @@
 import '../styles/style.css'
-/*setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)*/
+
 interface Article {
     title: string;
-    description: string;
-    urlToImage: string;
-    source: {
-        id: string;
-    };
-    content: string;
+    summary: string;
+    image_url: string;
+    id: string;
     url: string;
+    news_site: string;
 }
-
-//let currentPage = 1;
 
 window.addEventListener('scroll', () => {
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-        //currentPage++;
         fetchNewsAndCreateCards();
     }
 });
 
 async function fetchNewsAndCreateCards() {
     try {
-        const response = await fetch('https://newsapi.org/v2/everything?q=space&apiKey=1650a99552464f888839d27b052bf422/');
+        const response = await fetch('https://api.spaceflightnewsapi.net/v4/articles/');
         if (!response.ok) {
             throw new Error('Netzwerkantwort war nicht ok ' + response.statusText);
         }
         const data = await response.json();
-        const articles: Article[] = data.articles;
+        console.log(data);
+        const articles: Article[] = data.results;  // geändert von data.articles zu data.docs
 
         const cardsContainer = document.querySelector('#app .row') || document.createElement('div');
         cardsContainer.className = 'row';
 
         articles.forEach((article: Article) => {
+            console.log(article)
             const cardHTML = `
         <div class="col-md-6">
           <div class="card mb-3">
-            <img src="${article.urlToImage}" class="card-img-top" alt="${article.title}">
+            <img src="${article.image_url}" class="card-img-top" alt="${article.title}">  <!-- geändert von urlToImage zu imageUrl -->
             <div class="card-body">
               <h5 class="card-title">${article.title}</h5>
-              <p class="card-text">${article.description}</p>
-              <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${article.source.id}" aria-expanded="false" aria-controls="collapse${article.source.id}">
+              <p class="card-text">${article.summary}</p>
+              <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${article.id}" aria-expanded="false" aria-controls="collapse${article.id}">  <!-- geändert von source.id zu id -->
                 Read more
               </button>
-              <div class="collapse" id="collapse${article.source.id}">
+              <div class="collapse" id="collapse${article.id}">  <!-- geändert von source.id zu id -->
                 <div class="card card-body">
-                  ${article.content} <a href="${article.url}" target="_blank">Read full story</a>
+                  ${article.news_site} <a href="${article.url}" target="_blank">Read full story</a>
                 </div>
               </div>
             </div>
@@ -69,4 +66,3 @@ async function fetchNewsAndCreateCards() {
 }
 
 fetchNewsAndCreateCards();
-
