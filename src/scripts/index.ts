@@ -11,11 +11,11 @@ interface Article {
     url: string;
 }
 
-let currentPage = 1;
+//let currentPage = 1;
 
 window.addEventListener('scroll', () => {
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-        currentPage++;
+        //currentPage++;
         fetchNewsAndCreateCards();
     }
 });
