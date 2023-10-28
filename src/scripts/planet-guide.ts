@@ -1,4 +1,5 @@
 import { validateEmail } from './helper/validation';
+import * as bootstrap from 'bootstrap';
 
 const API_URL = 'https://api.le-systeme-solaire.net/rest/bodies/';
 const loginForm = document.getElementById('login-form');
@@ -28,7 +29,7 @@ async function fetchPlanetData() {
     try {
         const response = await fetch(API_URL);
         const data = await response.json();
-        return data.bodies.filter(body => body.isPlanet === true);
+        return data.bodies.filter((body: Planet) => body.isPlanet === true);
     } catch (error) {
         console.error('Fehler beim Abrufen der Planetendaten:', error);
         return [];
