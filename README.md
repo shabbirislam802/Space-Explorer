@@ -38,8 +38,8 @@ The "Space Explorer" web application is an interactive portal that allows users 
 ### Learning Objective: Create a basic HTML5 project with navigation
 
 ## Multiple Pages (e.g. Home, About, Contents, …) (5 Points)
-- [ ] **Implement multiple pages** with proper navigation
-- [ ] **You can use a single-page (dynamic content reloading) or a multipage approach**
+- [x] **Implement multiple pages** with proper navigation
+- [x] **You can use a single-page (dynamic content reloading) or a multipage approach**
 
 ### Learning Objective: Know how to integrate APIs via Ajax from JS/TS
 
@@ -51,14 +51,14 @@ The "Space Explorer" web application is an interactive portal that allows users 
 
 ## DOM Manipulation (10 Points)
 - [x] **Render requested API data in HTML** (table, list, containers, …)
-- [ ] **Users can add and remove items** from previously loaded data to another element (e.g. “favorites” or “shopping cart”)
+- [x] **Users can add and remove items** from previously loaded data to another element (e.g. “favorites” or “shopping cart”)
 
 ### Learning Objective: Know how to implement HTML5 forms an how to properly validate user input with JS/TS and HTML5
 
 ## Implement a form (10 Points)
-- [ ] **Implement a form that consists of following fields:** text, number, password, email
-    - [ ] Make use of proper html attributes!
-- [ ] **Input is validated on user event** (click, hover, enter, …). Choose at least 1 event handler. Input should be validated via JS/TS and HTML5.
+- [x] **Implement a form that consists of following fields:** text, number, password, email
+    - [x] Make use of proper html attributes!
+- [x] **Input is validated on user event** (click, hover, enter, …). Choose at least 1 event handler. Input should be validated via JS/TS and HTML5.
 - [ ] **Input validation error/success is presented to the user** (modal, in-form highlighting, …)
 
 ### Learning Objective: Know how to implement a CI/CD pipeline to automate the development and deployment process – write automated tests

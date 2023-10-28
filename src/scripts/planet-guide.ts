@@ -1,134 +1,154 @@
-import '../styles/style.css'
-const API_KEY = 'GN6NdjDnn5zYmh2gZMYDwKsRqI9ahmZ6iQeMeipU ';
+import { validateEmail } from './helper/validation';
+
+const API_URL = 'https://api.le-systeme-solaire.net/rest/bodies/';
+const loginForm = document.getElementById('login-form');
+
+interface Planet {
+    isPlanet: boolean;
+    englishName: string;
+    mass?: { massValue: number, massExponent: number };
+    meanRadius?: number;
+    density?: number;
+    avgTemp?: number;
+    discoveredBy?: string;
+    discoveryDate?: string;
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     const token = sessionStorage.getItem('token');
     if (token) {
+        addPlanetFiltering();
         loadSpaceContent();
     } else {
         showLoginForm();
     }
 });
 
-const API_URL = 'https://api.le-systeme-solaire.net/rest/bodies/';
-
 async function fetchPlanetData() {
     try {
         const response = await fetch(API_URL);
         const data = await response.json();
-        console.log(data.bodies.filter((body: any) => body.isPlanet === true));
-        return data.bodies.filter((body: any) => body.isPlanet === true);
+        return data.bodies.filter(body => body.isPlanet === true);
     } catch (error) {
         console.error('Fehler beim Abrufen der Planetendaten:', error);
         return [];
     }
 }
 
-async function fetchPlanetImages() {
-    try {
-        const response = await fetch(`https://api.nasa.gov/planetary/apod?count=10&api_key=${API_KEY}`);
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Fehler beim Abrufen der Planetenbilder:', error);
-        return [];
-    }
-}
-
 async function loadSpaceContent(): Promise<void> {
-    const appDiv = document.querySelector<HTMLDivElement>('#planet-guide');
+    const appDiv = document.querySelector<HTMLDivElement>('#planet-guide-content');
     if (!appDiv) return;
 
-    // Planets Guide Content
-    const planetsGuideDiv = document.createElement('div');
-    planetsGuideDiv.id = 'planets-guide';
-    planetsGuideDiv.innerHTML = '<h2>Planets Guide</h2>';
-    appDiv.appendChild(planetsGuideDiv);
-
     const planetData = await fetchPlanetData();
-    const planetImages = await fetchPlanetImages();
-
-    displayPlanets(planetData, planetImages);
+    displayPlanets(planetData);
 }
 
-async function addPlanetFiltering(): Promise<void> {
-    const planetsGuideDiv = document.querySelector<HTMLDivElement>('#planets-guide');
+function addPlanetFiltering(): void {
+    const planetsGuideDiv = document.querySelector<HTMLDivElement>('#planet-guide-filter');
     if (!planetsGuideDiv) return;
+
+    const filterDiv = document.createElement('div');
+    filterDiv.className = 'd-flex justify-content-between align-items-center mb-3';
+    filterDiv.id = 'filter-div';
 
     const searchInput = document.createElement('input');
     searchInput.type = 'text';
     searchInput.placeholder = 'Search for a planet...';
-    planetsGuideDiv.appendChild(searchInput);
+    searchInput.className = 'form-control';
+    filterDiv.appendChild(searchInput);
 
-    searchInput.addEventListener('input', async (event) => {
-        const query = (event.target as HTMLInputElement).value.toLowerCase();
-        const planetData = await fetchPlanetData();
-        const filteredData = planetData.filter(photo => photo.rover.name.toLowerCase().includes(query));  // Annahme: Datenstruktur basierend auf dem API-Endpunkt
-        displayPlanets(filteredData);
+    const favoriteDiv = document.createElement('div');
+    favoriteDiv.className = 'form-check form-check-inline';
+
+    const favoriteCheckbox = document.createElement('input');
+    favoriteCheckbox.type = 'checkbox';
+    favoriteCheckbox.id = 'favorite-checkbox';
+    favoriteCheckbox.className = 'form-check-input';
+    favoriteDiv.appendChild(favoriteCheckbox);
+
+    const favoriteLabel = document.createElement('label');
+    favoriteLabel.htmlFor = 'favorite-checkbox';
+    favoriteLabel.innerText = ' Show only favorites';
+    favoriteLabel.className = 'form-check-label';
+    favoriteDiv.appendChild(favoriteLabel);
+
+    filterDiv.appendChild(favoriteDiv);
+
+    planetsGuideDiv.prepend(filterDiv);
+
+    searchInput.addEventListener('input', async () => {
+        filterAndDisplayPlanets(searchInput, favoriteCheckbox);
+    });
+
+    favoriteCheckbox.addEventListener('change', async () => {
+        filterAndDisplayPlanets(searchInput, favoriteCheckbox);
     });
 }
 
-function displayPlanets(planetData: any[], planetImages: any[]): void {
-    const planetsGuideDiv = document.querySelector<HTMLDivElement>('#planets-guide');
+async function filterAndDisplayPlanets(searchInput: HTMLInputElement, favoriteCheckbox: HTMLInputElement) {
+    const query = searchInput.value.toLowerCase();
+    const showFavorites = favoriteCheckbox.checked;
+    const planetData = await fetchPlanetData();
+    const filteredData = planetData.filter((planet: Planet) =>
+        planet.englishName.toLowerCase().includes(query) &&
+        (!showFavorites || JSON.parse(localStorage.getItem('favorites') || '[]').includes(planet.englishName))
+    );
+    displayPlanets(filteredData);
+}
+
+
+function displayPlanets(planetData: Planet[]): void {
+    const planetsGuideDiv = document.querySelector<HTMLDivElement>('#planet-guide-content');
     if (!planetsGuideDiv) return;
+    planetsGuideDiv.innerHTML = '<h2>Planets Guide</h2>';
 
-    planetsGuideDiv.innerHTML = '';  // Löschen des vorhandenen Inhalts (wenn vorhanden)
-
-    planetData.forEach((planet, index) => {
+    planetData.forEach((planet) => {
         const card = document.createElement('div');
-        card.className = 'card';
-
-        const carouselId = `carousel${index}`;
-
-        // Karussell für Planetenbilder
-        const carousel = `
-            <div id="${carouselId}" class="carousel slide" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                    ${planetImages.map((image, idx) => `
-                        <div class="carousel-item ${idx === 0 ? 'active' : ''}">
-                            <img src="${image.url}" class="d-block w-100" alt="${planet.englishName} image ${idx + 1}">
-                        </div>
-                    `).join('')}
-                </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#${carouselId}" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#${carouselId}" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
-            </div>
-        `;
+        card.className = 'card mb-3';
 
         // Planeteninformationen
-        const cardBody = `
-            <div class="card-body">
-                <h5 class="card-title">${planet.englishName}</h5>
-                <p class="card-text">Mass: ${planet.mass.massValue} ${planet.mass.massExponent} kg, Diameter: ${planet.meanRadius} km</p>
-            </div>
-        `;
+        const cardBody = document.createElement('div');
+        cardBody.className = 'card-body';
 
-        card.innerHTML = carousel + cardBody;
+        const title = document.createElement('h5');
+        title.className = 'card-title';
+        title.innerText = planet.englishName;
+        cardBody.appendChild(title);
+
+        const text = document.createElement('p');
+        text.className = 'card-text';
+        text.innerHTML = `
+            Mass: ${planet.mass?.massValue ?? 'N/A'} ${planet.mass?.massExponent ?? ''} kg<br>
+            Diameter: ${planet.meanRadius ?? 'N/A'} km<br>
+            Density: ${planet.density ?? 'N/A'} g/cm³<br>
+            Temperature: ${planet.avgTemp ?? 'N/A'}°C<br>
+            Discovered by: ${planet.discoveredBy ?? 'N/A'}<br>
+            Discovered on: ${planet.discoveryDate ?? 'N/A'}<br>
+            Radius: ${planet.meanRadius ?? 'N/A'} km
+        `;
+        cardBody.appendChild(text);
+
+        const button = document.createElement('button');
+        button.className = 'btn btn-primary';
+        button.innerText = JSON.parse(localStorage.getItem('favorites') || '[]').includes(planet.englishName) ? 'Unfavorite' : 'Favorite';
+        button.addEventListener('click', () => toggleFavorite(planet.englishName));
+        cardBody.appendChild(button);
+
+        card.appendChild(cardBody);
         planetsGuideDiv.appendChild(card);
     });
 }
 
-function addPlanetToFavorites(planetName: string): void {
-    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
-    if (!favorites.includes(planetName)) {
-        favorites.push(planetName);
-        localStorage.setItem('favorites', JSON.stringify(favorites));
-    }
-}
-
-function removePlanetFromFavorites(planetName: string): void {
+function toggleFavorite(planetName: string): void {
     const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
     const index = favorites.indexOf(planetName);
     if (index !== -1) {
         favorites.splice(index, 1);
-        localStorage.setItem('favorites', JSON.stringify(favorites));
+    } else {
+        favorites.push(planetName);
     }
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+    loadSpaceContent();
 }
 
 function showLoginForm(): void {
@@ -172,37 +192,34 @@ function showLoginForm(): void {
 
         document.body.appendChild(modal);
     }
+    if (loginForm) {
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const form = e.target as HTMLFormElement;
+            const username = form.username.value;
+            const email = form.email.value;
+            const password = form.password.value;
 
-    document.getElementById('login-form').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const form = e.target as HTMLFormElement;
-        const username = form.username.value;
-        const email = form.email.value;
-        const password = form.password.value;
-
-        if (username && validateEmail(email) && password.length >= 8) {
-            sessionStorage.setItem('token', 'aksdGsasda12mvw123');  // Set a token value
-            closeModal();
-            loadSpaceContent();
-        } else {
-            alert('Please enter valid information.');
-        }
-    });
+            if (username && validateEmail(email) && password.length >= 8) {
+                sessionStorage.setItem('token', 'access-token');
+                closeModal();
+                loadSpaceContent();
+            } else {
+                alert('Please enter valid information.');
+            }
+        });
+    }
 
     const bsModal = new bootstrap.Modal(modal);
     bsModal.show();
-}
-
-
-function validateEmail(email: string): boolean {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
 }
 
 function closeModal(): void {
     const modal = document.getElementById('login-modal');
     if (modal) {
         const bsModal = bootstrap.Modal.getInstance(modal);
-        bsModal.hide();
+        if (bsModal) {
+            bsModal.hide();
+        }
     }
 }
