@@ -22,7 +22,7 @@ window.addEventListener('scroll', () => {
 
 async function fetchNewsAndCreateCards() {
     try {
-        const response = await fetch(`https://newsapi.org/v2/everything?q=space&apiKey=1650a99552464f888839d27b052bf422`);
+        const response = await fetch('https://newsapi.org/v2/everything?q=space&apiKey=1650a99552464f888839d27b052bf422/');
         if (!response.ok) {
             throw new Error('Netzwerkantwort war nicht ok ' + response.statusText);
         }
