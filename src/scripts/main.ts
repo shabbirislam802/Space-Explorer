@@ -1,8 +1,6 @@
-import './style.css'
-import typescriptLogo from './typescript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.ts'
-import axios from 'axios';
+import '../styles/style.css'
+/*import { setupCounter } from './counter.ts'
+import axios from 'axios';*/
 
 /*document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <div>
@@ -23,17 +21,39 @@ import axios from 'axios';
 `
 
 setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)*/
-async function fetchNewsAndCreateCards() {
-    try {
-        // API-Aufruf (ersetzen Sie dies durch den tatsächlichen API-Endpunkt und -Schlüssel)
-        const response = await axios.get('https://newsapi.org/v2/everything?q=space&apiKey=1650a99552464f888839d27b052bf422');
-        const articles = response.data.articles;
+interface Article {
+    title: string;
+    description: string;
+    urlToImage: string;
+    source: {
+        id: string;
+    };
+    content: string;
+    url: string;
+}
 
-        // Karten erstellen
-        const cardsContainer = document.createElement('div');
+let currentPage = 1;
+
+window.addEventListener('scroll', () => {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+        currentPage++;
+        fetchNewsAndCreateCards(currentPage);
+    }
+});
+
+async function fetchNewsAndCreateCards(page: number) {
+    try {
+        const response = await fetch(`https://newsapi.org/v2/everything?q=space&apiKey=1650a99552464f888839d27b052bf422&pageSize=10&page=${page}`);
+        if (!response.ok) {
+            throw new Error('Netzwerkantwort war nicht ok ' + response.statusText);
+        }
+        const data = await response.json();
+        const articles: Article[] = data.articles;
+
+        const cardsContainer = document.querySelector('#app .row') || document.createElement('div');
         cardsContainer.className = 'row';
 
-        articles.forEach(article => {
+        articles.forEach((article: Article) => {
             const cardHTML = `
         <div class="col-md-6">
           <div class="card mb-3">
@@ -46,7 +66,7 @@ async function fetchNewsAndCreateCards() {
               </button>
               <div class="collapse" id="collapse${article.source.id}">
                 <div class="card card-body">
-                  ${article.content}
+                  ${article.content} <a href="${article.url}" target="_blank">Read full story</a>
                 </div>
               </div>
             </div>
@@ -56,11 +76,18 @@ async function fetchNewsAndCreateCards() {
             cardsContainer.innerHTML += cardHTML;
         });
 
-        document.querySelector('#app').appendChild(cardsContainer);
+        if (!document.querySelector('#app .row')) {
+            const appElement = document.querySelector('#app');
+            if (appElement) {
+                appElement.appendChild(cardsContainer);
+            } else {
+                console.error('Das Element #app wurde nicht gefunden');
+            }
+        }
     } catch (error) {
         console.error('Fehler beim Abrufen der Nachrichten:', error);
     }
 }
 
-// Funktion aufrufen
-fetchNewsAndCreateCards();
+fetchNewsAndCreateCards(currentPage);
+
