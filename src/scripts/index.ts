@@ -16,11 +16,11 @@ let currentPage = 1;
 window.addEventListener('scroll', () => {
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
         currentPage++;
-        fetchNewsAndCreateCards(currentPage);
+        fetchNewsAndCreateCards();
     }
 });
 
-async function fetchNewsAndCreateCards(page: number) {
+async function fetchNewsAndCreateCards() {
     try {
         const response = await fetch(`https://newsapi.org/v2/everything?q=space&apiKey=1650a99552464f888839d27b052bf422`);
         if (!response.ok) {
@@ -68,5 +68,5 @@ async function fetchNewsAndCreateCards(page: number) {
     }
 }
 
-fetchNewsAndCreateCards(currentPage);
+fetchNewsAndCreateCards();
 
