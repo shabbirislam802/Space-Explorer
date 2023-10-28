@@ -3,8 +3,7 @@ name: Space Explorer CI/CD Workflow
 on:
   push:
     branches:
-      - development
-      - main
+      - '*'
       
 permissions:
   contents: read
@@ -57,7 +56,6 @@ jobs:
       - name: Build with Vite
         run: npm run build
 
-      # Nachfolgende Schritte sind für das Deployment auf GitHub Pages
       - name: Setup Pages
         uses: actions/configure-pages@v3
 
