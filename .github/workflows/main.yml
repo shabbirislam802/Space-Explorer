@@ -51,3 +51,16 @@ jobs:
 
       - name: Build with Vite
         run: npm run build
+
+      # Nachfolgende Schritte sind für das Deployment auf GitHub Pages
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: './dist'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
