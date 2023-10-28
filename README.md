@@ -6,7 +6,7 @@ The "Space Explorer" web application is an interactive portal that allows users 
 
 1. **Daily Space Images:** Discover stunning daily images from space.
 3. **Planets Guide:** Explore the different planets of our solar system with detailed data and images.
-4. **Asteroids Tracker:** Track asteroids and get information about their positions and orbital data.
+4. **Space News:** Display of space news with linking of the real scources.
 
 ## Technologies
 
