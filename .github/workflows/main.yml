@@ -1,6 +1,9 @@
 name: Space Explorer CI/CD Workflow
 
 on:
+  pull_request:
+    branches:
+      - "main"
   push:
     branches:
       - '*'
@@ -13,7 +16,6 @@ permissions:
 jobs:
   test_and_lint:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/development'
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -33,6 +35,7 @@ jobs:
         run: npm run lint
 
   build_and_deploy:
+    needs: test_and_lint
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
@@ -46,12 +49,6 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-
-      - name: Run tests
-        run: npm test
-
-      - name: Run linter
-        run: npm run lint
 
       - name: Build with Vite
         run: npm run build
