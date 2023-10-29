@@ -45,8 +45,8 @@ export async function fetchNewsAndCreateCards(offset: number) {
                 console.error('Das Element #app wurde nicht gefunden');
             }
         }
-    } catch (error) {
-        showError(error);
+    } catch (error: any) {
+        showError(error.message || 'Fehler beim Abrufen der Nachrichten');
         console.error('Fehler beim Abrufen der Nachrichten:', error);
     }
 }
@@ -56,8 +56,8 @@ export async function fetchPlanetData() {
         const response = await fetch('https://api.le-systeme-solaire.net/rest/bodies/');
         const data = await response.json();
         return data.bodies.filter((body: Planet) => body.isPlanet === true);
-    } catch (error) {
-        showError(error);
+    } catch (error: any) {
+        showError(error.message || 'Fehler beim Abrufen der Planetendaten');
         console.error('Fehler beim Abrufen der Planetendaten:', error);
         return [];
     }
