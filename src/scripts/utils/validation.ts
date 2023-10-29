@@ -3,35 +3,32 @@ export function validateForm(form: HTMLFormElement): boolean {
     const email = form.email.value.trim();
     const password = form.password.value.trim();
 
-    let isValid = true;
-
     form.classList.remove('was-validated');
 
     if (!username) {
         form.username.classList.add('is-invalid');
-        isValid = false;
+        return false;
     } else {
         form.username.classList.remove('is-invalid');
     }
 
-    console.log(form.email);
     if (!validateEmail(email)) {
         form.email.classList.add('is-invalid');
-        isValid = false;
+        return false;
     } else {
         form.email.classList.remove('is-invalid');
     }
 
     if (password.length < 8) {
         form.password.classList.add('is-invalid');
-        isValid = false;
+        return false;
     } else {
         form.password.classList.remove('is-invalid');
     }
 
     form.classList.add('was-validated');
 
-    return isValid;
+    return true;
 }
 
 export function validateEmail(email: string): boolean {
