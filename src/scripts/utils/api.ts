@@ -1,7 +1,7 @@
 import {Article, Planet} from "./interfaces";
 import {showError} from "./notification";
 
-export async function fetchNewsAndCreateCards(offset: Number) {
+export async function fetchNewsAndCreateCards(offset: number) {
     try {
         const response = await fetch(`https://api.spaceflightnewsapi.net/v4/articles/?limit=10&offset=${offset}`);
         if (!response.ok) {
