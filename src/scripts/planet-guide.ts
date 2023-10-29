@@ -1,6 +1,5 @@
 import * as bootstrap from 'bootstrap';
 import '../styles/style.css'
-
 import {validateForm} from './utils/validation';
 import {fetchPlanetData} from "./utils/api";
 import {Planet} from "./utils/interfaces";
@@ -76,7 +75,6 @@ async function filterAndDisplayPlanets(searchInput: HTMLInputElement, favoriteCh
     );
     displayPlanets(filteredData);
 }
-
 
 function displayPlanets(planetData: Planet[]): void {
     const planetsGuideDiv = document.querySelector<HTMLDivElement>('#planet-guide-content');
