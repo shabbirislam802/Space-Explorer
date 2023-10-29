@@ -1,5 +1,7 @@
 import '../styles/style.css'
 
+let currentOffset = 10;
+
 interface Article {
     title: string;
     summary: string;
@@ -11,25 +13,24 @@ interface Article {
 
 window.addEventListener('scroll', () => {
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-        fetchNewsAndCreateCards();
+        currentOffset += 10;
+        fetchNewsAndCreateCards(currentOffset);
     }
 });
 
-async function fetchNewsAndCreateCards() {
+async function fetchNewsAndCreateCards(offset: Number) {
     try {
-        const response = await fetch('https://api.spaceflightnewsapi.net/v4/articles/');
+        const response = await fetch(`https://api.spaceflightnewsapi.net/v4/articles/?limit=10&offset=${offset}`);
         if (!response.ok) {
             throw new Error('Netzwerkantwort war nicht ok ' + response.statusText);
         }
         const data = await response.json();
-        console.log(data);
         const articles: Article[] = data.results;  // geändert von data.articles zu data.docs
 
         const cardsContainer = document.querySelector('#app .row') || document.createElement('div');
         cardsContainer.className = 'row';
 
         articles.forEach((article: Article) => {
-            console.log(article)
             const cardHTML = `
         <div class="col-md-6">
           <div class="card mb-3">
@@ -65,4 +66,4 @@ async function fetchNewsAndCreateCards() {
     }
 }
 
-fetchNewsAndCreateCards();
+fetchNewsAndCreateCards(currentOffset);
