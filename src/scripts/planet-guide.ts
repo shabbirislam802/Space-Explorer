@@ -1,18 +1,10 @@
-import { validateEmail } from './helper/validation';
 import * as bootstrap from 'bootstrap';
+import '../styles/style.css'
 
-const API_URL = 'https://api.le-systeme-solaire.net/rest/bodies/';
+import {validateForm} from './utils/validation';
+import {fetchPlanetData} from "./utils/api";
+import {Planet} from "./utils/interfaces";
 
-interface Planet {
-    isPlanet: boolean;
-    englishName: string;
-    mass?: { massValue: number, massExponent: number };
-    meanRadius?: number;
-    density?: number;
-    avgTemp?: number;
-    discoveredBy?: string;
-    discoveryDate?: string;
-}
 
 document.addEventListener('DOMContentLoaded', () => {
     const token = sessionStorage.getItem('token');
@@ -23,17 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
         showLoginForm();
     }
 });
-
-async function fetchPlanetData() {
-    try {
-        const response = await fetch(API_URL);
-        const data = await response.json();
-        return data.bodies.filter((body: Planet) => body.isPlanet === true);
-    } catch (error) {
-        console.error('Fehler beim Abrufen der Planetendaten:', error);
-        return [];
-    }
-}
 
 async function loadSpaceContent(): Promise<void> {
     const appDiv = document.querySelector<HTMLDivElement>('#planet-guide-content');
@@ -48,8 +29,8 @@ function addPlanetFiltering(): void {
     if (!planetsGuideDiv) return;
 
     const filterDiv = document.createElement('div');
-    filterDiv.className = 'd-flex justify-content-between align-items-center mb-3';
-    filterDiv.id = 'filter-div';
+    filterDiv.className = 'd-flex justify-content-between flex-wrap align-items-center mb-3';
+    filterDiv.id = 'filter-block';
 
     const searchInput = document.createElement('input');
     searchInput.type = 'text';
@@ -58,7 +39,7 @@ function addPlanetFiltering(): void {
     filterDiv.appendChild(searchInput);
 
     const favoriteDiv = document.createElement('div');
-    favoriteDiv.className = 'form-check form-check-inline';
+    favoriteDiv.className = 'form-check form-check-inline mt-2';
 
     const favoriteCheckbox = document.createElement('input');
     favoriteCheckbox.type = 'checkbox';
@@ -189,24 +170,20 @@ function showLoginForm(): void {
             </div>
         </div>
     `;
-
         document.body.appendChild(modal);
     }
+
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const form = e.target as HTMLFormElement;
-            const username = form.username.value;
-            const email = form.email.value;
-            const password = form.password.value;
-
-            if (username && validateEmail(email) && password.length >= 8) {
+            const formValid = validateForm(form);
+            if (formValid) {
                 sessionStorage.setItem('token', 'access-token');
                 closeModal();
+                addPlanetFiltering();
                 loadSpaceContent();
-            } else {
-                alert('Please enter valid information.');
             }
         });
     }

@@ -1,4 +1,4 @@
-import { validateEmail } from "../src/scripts/helper/validation";
+import { validateEmail } from "../src/scripts/utils/validation";
 
 describe('validateEmail', () => {
     it('should return true for valid email addresses', () => {

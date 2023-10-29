@@ -4,17 +4,16 @@ The "Space Explorer" web application is an interactive portal that allows users 
 
 ## Features
 
-1. **Daily Space Images:** Discover stunning daily images from space.
-3. **Planets Guide:** Explore the different planets of our solar system with detailed data and images.
-4. **Space News:** Display of space news with linking of the real scources.
+1**Planets Guide:** Explore the different planets of our solar system with detailed data.
+2**Space News:** Display of space news with linking of the real scources.
 
 ## Technologies
 
 - **Frontend:** HTML5, CSS3, TypeScript
-- **Build Tools:** npm, Webpack (or another tool of your choice)
-- **Testing:** Jest (or another testing framework of your choice)
+- **Build Tools:** npm, vite
+- **Testing:** Jest 
 - **CI/CD:** GitHub Actions
-- **Hosting:** GitHub Pages (or another hosting provider of your choice)
+- **Hosting:** GitHub Pages
 
 # Frontend Application Tasks – Web Engineering
 
@@ -32,7 +31,7 @@ The "Space Explorer" web application is an interactive portal that allows users 
 - [x] **Define 2 tasks in npm scripts:**
     - [x] Development
     - [x] Production build (e.g. obfuscated, minified, bundled)
-- [ ] **Keep your builds clear** and add dependencies to the right build (e.g. do not add dev dependencies inside the production build)
+- [x] **Keep your builds clear** and add dependencies to the right build (e.g. do not add dev dependencies inside the production build)
 - [x] **Configure your project to use Typescript** as your primary development language.
 
 ### Learning Objective: Create a basic HTML5 project with navigation
@@ -59,14 +58,14 @@ The "Space Explorer" web application is an interactive portal that allows users 
 - [x] **Implement a form that consists of following fields:** text, number, password, email
     - [x] Make use of proper html attributes!
 - [x] **Input is validated on user event** (click, hover, enter, …). Choose at least 1 event handler. Input should be validated via JS/TS and HTML5.
-- [ ] **Input validation error/success is presented to the user** (modal, in-form highlighting, …)
+- [x] **Input validation error/success is presented to the user** (modal, in-form highlighting, …)
 
 ### Learning Objective: Know how to implement a CI/CD pipeline to automate the development and deployment process – write automated tests
 
 ## CI/CD (20 Points)
-- [ ] **Write at least 2 unit tests for your project** and configure tasks in npm scripts (5 points)
-- [ ] **Configure a linting tool of your choice** and add it to your npm scripts (5 points)
-- [ ] **Configure 2 Workflows in GitHub Actions**, one for development and one for deployment (10 points):
-    - [ ] Create a `development` Branch inside your repository
-    - [ ] Development Workflow should at least test and lint your code when developers push to branch `development`
-    - [ ] Deployment Workflow is triggered when developers push into `main` branch. It should at least test, lint and build your source code. Afterwards the build artifacts of your application should be automatically deployed to Github Pages (or another hosting provider of your choice). Note: in Github Actions it is possible to reuse existing workflows in other workflows.
+- [x] **Write at least 2 unit tests for your project** and configure tasks in npm scripts (5 points)
+- [x] **Configure a linting tool of your choice** and add it to your npm scripts (5 points)
+- [x] **Configure 2 Workflows in GitHub Actions**, one for development and one for deployment (10 points):
+    - [x] Create a `development` Branch inside your repository
+    - [x] Development Workflow should at least test and lint your code when developers push to branch `development`
+    - [x] Deployment Workflow is triggered when developers push into `main` branch. It should at least test, lint and build your source code. Afterwards the build artifacts of your application should be automatically deployed to Github Pages (or another hosting provider of your choice). Note: in Github Actions it is possible to reuse existing workflows in other workflows.
